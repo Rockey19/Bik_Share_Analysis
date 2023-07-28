@@ -1,0 +1,124 @@
+---
+title: "Bike Share Analysis"
+author: "Samantha Rockey"
+date: "2023-07-25"
+output:html_document: default
+
+# Install packages
+```{r}
+install.packages("tidyverse")
+install.packages("lubridate")
+install.packages("ggplot2")
+install.packages("dplyr")
+```
+# Library your packages
+```{r}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(dplyr)
+```
+# Get your working directory
+```{r}
+getwd()
+```
+# set your working directory
+```{r}
+setwd("E:/Case study/Case study 1/CSV")
+```
+# check that your working directory was correctly changed
+```{r}
+getwd()
+```
+
+#Load your data into data frames
+```{r}
+may22_df <- read_csv("2022-05-divvy-tripdata.csv")
+jun22_df <- read_csv("2022-06-divvy-tripdata.csv")
+jul22_df <- read_csv("2022-07-divvy-tripdata.csv")
+aug22_df <- read_csv("2022-08-divvy-tripdata.csv")
+sep22_df <- read_csv("2022-09-divvy-publictripdata.csv")
+oct22_df <- read_csv("2022-10-divvy-tripdata.csv")
+nov22_df <- read_csv("2022-11-divvy-tripdata.csv")
+dec22_df <- read_csv("2022-12-divvy-tripdata.csv")
+jan23_df <- read_csv("2023-01-divvy-tripdata.csv")
+feb23_df <- read_csv("2023-02-divvy-tripdata.csv")
+mar23_df <- read_csv("2023-03-divvy-tripdata.csv")
+apr23_df <- read_csv("2023-04-divvy-tripdata.csv")
+```
+
+# check the column names to make sure they are the same
+```{r}
+colnames(may22_df)
+colnames(jun22_df)
+colnames(jul22_df)
+colnames(aug22_df)
+colnames(sep22_df)
+colnames(oct22_df)
+colnames(nov22_df)
+colnames(dec22_df)
+colnames(jan23_df)
+colnames(feb23_df)
+colnames(mar23_df)
+colnames(apr23_df)
+```
+
+# Combine all the data frames into one large frame for year-long analysis
+```{r}
+all_trips <- bind_rows(apr23_df, aug22_df, dec22_df, feb23_df, jan23_df, jul22_df, jun22_df, mar23_df, may22_df, nov22_df, oct22_df, sep22_df)
+```
+
+# Remove unnecessary columns from data frame
+```{r}
+all_trips <- all_trips %>% select(-c(start_lng, start_lat, end_lat, end_lng))
+```
+
+# Change ride length data type
+```{r}
+all_trips$ride_length <- as.numeric(as.POSIXlt(all_trips$ride_length, format = "%H:%M:%S"))
+```
+
+# Inspect your data table
+```{r}
+colnames(all_trips)
+nrow(all_trips)
+dim(all_trips)
+head(all_trips)
+tail(all_trips)
+str(all_trips)
+summary(all_trips)
+```
+
+# Add columns for day month and year
+```{r}
+all_trips$date <- as.Date(all_trips$started_at, format = "%m/%d/%Y %H:%M") 
+all_trips$month <- format(as.Date(all_trips$date), "%m")
+all_trips$day <- format(as.Date(all_trips$date), "%d")
+all_trips$year <- format(as.Date(all_trips$date), "%Y")
+all_trips$day_of_week <- format(as.Date(all_trips$date), "%A")
+```
+
+# Check that your columns were added
+```{r}
+colnames(all_trips)
+```
+
+# Start analysis
+
+# mean ride length
+```{r}
+mean(all_trips$ride_length,na.rm = TRUE)
+```
+# max ride length
+```{r}
+max(all_trips$ride_length, na.rm = TRUE)
+```
+
+# min ride length
+```{r}
+min(all_trips$ride_length, na.rm = TRUE)
+```
+# You can view the summary of the mean, median, min and max of ride lengths
+```{r}
+summary(all_trips$ride_length)
+```
